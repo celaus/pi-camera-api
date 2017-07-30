@@ -3,7 +3,6 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 
-import HeroRouter from './routes/HeroRouter';
 import CamRouter from './routes/CamRouter';
 
 class App {
@@ -29,7 +28,6 @@ class App {
             });
         });
         this.express.use('/status', router);
-        this.express.use('/api/v1/heroes', HeroRouter);
         this.express.use('/api/v1/photo', CamRouter);
     }
 }

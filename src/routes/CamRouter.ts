@@ -4,16 +4,14 @@ import { Raspistill } from "node-raspistill";
 export class CamRouter {
     router: Router
 
-    /**
-     * Initialize the HeroRouter
-     */
+
     constructor() {
         this.router = Router();
         this.init();
     }
 
     /**
-     * GET one hero by id
+     * Take a picture
      */
     public takePhoto(req: Request, res: Response, next: NextFunction) {
         const raspistill = new Raspistill();
@@ -34,16 +32,12 @@ export class CamRouter {
             });
     }
 
-    /**
-     * Take each handler, and attach to one of the Express.Router's
-     * endpoints.
-     */
+
     init() {
         this.router.get('/take', this.takePhoto);
     }
 }
 
-// Create the HeroRouter, and export its configured Express.Router
 const camRoutes = new CamRouter();
 camRoutes.init();
 
