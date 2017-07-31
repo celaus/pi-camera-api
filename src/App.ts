@@ -21,13 +21,6 @@ class App {
     }
 
     private routes(): void {
-        let router = express.Router();
-        router.get('/', (req, res, next) => {
-            res.json({
-                status: 'Ok',
-            });
-        });
-        this.express.use('/status', router);
         this.express.use('/api/v1/photo', CamRouter);
     }
 }
