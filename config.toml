@@ -9,7 +9,7 @@ password = "password"
 ca = "/tmp/ca.crt"
 
 [camera]
-timeout = 0.1# seconds
+timeout = 10# milliseconds
 
 
 [timelapse]
@@ -17,3 +17,6 @@ interval = 60000 # ms
 resolution = [1920, 1080]
 
 
+[device]
+name = "Raspberry 1" # A device identifier
+role = "sensor"

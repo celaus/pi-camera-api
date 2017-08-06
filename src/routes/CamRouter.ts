@@ -21,7 +21,6 @@ export class CamRouter {
         const h = parseInt(req.query.height);
         const timeout = parseInt(req.query.timeout);
 
-
         new CamService(w === NaN ? this.defaultImageWidth : w,
             h === NaN ? this.defaultImageHeight : h,
             timeout === NaN ? this.defaultTimeout : timeout)
