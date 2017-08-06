@@ -1,24 +1,63 @@
 import * as http from 'http';
 import * as debug from 'debug';
+import { TomlReader } from '@sgarciac/bombadil';
+import { SchedulerService } from './services/SchedulerService';
+import { MQTTService } from './services/MQTTService';
+import { CamService } from './services/CamService';
+import { readFileSync } from 'fs';
 
 import App from './App';
 
 debug('ts-express:server');
 
-const port = normalizePort(process.env.PORT || 3000);
+const defaultImageWidth: number = 1920;
+const defaultImageHeight: number = 1080;
+const defaultTimeout: number = 0;
+
+const args = process.argv.slice(2);
+let configRaw = readFileSync(args[0]);
+
+let reader = new TomlReader();
+reader.readToml(configRaw.toString());
+if (!reader.result) {
+    console.log("Unable to read configuration: ", reader.errors);
+    process.exit(1);
+}
+const config = reader.result;
+
+const port = config['http']['port'] || 3000;
+const topic = config['mqtt']['topic'] || 'topic';
+const broker = config['mqtt']['broker'] || 'localhost:1883';
+const user = config['mqtt']['user'] || 'user';
+const password = config['mqtt']['password'] || 'password';
+const useCert = 'ca' in config['mqtt'] && <boolean>config['mqtt']['ca'];
+const caPath = config['mqtt']['ca'];
+
+const interval = config['timelapse']['interval'] || 60000;
+let resolution = [defaultImageWidth, defaultImageHeight];
+if (config['timelapse']['resolution'] instanceof Array && config['timelapse']['resolution'].length === 2) {
+    resolution = config['timelapse']['resolution'];
+}
+const imageWidth = resolution[0];
+const imageHeight = resolution[1];
+
+const timeout = config['camera']['timeout'] || defaultTimeout;
+
 App.set('port', port);
+const camService = new CamService(imageWidth, imageHeight, timeout);
+const mqttService = new MQTTService(broker, user, password, useCert ? caPath : undefined);
+const scheduler = new SchedulerService(() => {
+    camService.takePhoto().then((photo) => {
+        mqttService.publish(topic, photo);
+    })
+});
+
+scheduler.start(interval);
 
 const server = http.createServer(App);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-function normalizePort(val: number | string): number | string | boolean {
-    let port: number = (typeof val === 'string') ? parseInt(val, 10) : val;
-    if (isNaN(port)) return val;
-    else if (port >= 0) return port;
-    else return false;
-}
 
 function onError(error: NodeJS.ErrnoException): void {
     if (error.syscall !== 'listen') throw error;

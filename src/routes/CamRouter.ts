@@ -1,13 +1,12 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { Raspistill } from "node-raspistill";
-
+import { CamService } from '../services/CamService';
 
 export class CamRouter {
     router: Router
 
     defaultImageWidth: number = 1920;
     defaultImageHeight: number = 1080;
-
+    defaultTimeout: number = 0;
 
     constructor() {
         this.router = Router();
@@ -18,18 +17,15 @@ export class CamRouter {
      * Take a picture
      */
     public takePhoto(req: Request, res: Response, next: NextFunction) {
-        var w = parseInt(req.query.width);
-        var h = parseInt(req.query.height);
-        var timeout = parseInt(req.query.timeout);
+        const w = parseInt(req.query.width);
+        const h = parseInt(req.query.height);
+        const timeout = parseInt(req.query.timeout);
 
-        const raspistill = new Raspistill({
-            width: w === NaN ? this.defaultImageWidth : w,
-            height: h === NaN ? this.defaultImageHeight : h,
-            time: timeout === NaN ? 0 : timeout,
-            encoding: 'png'
-        });
 
-        raspistill.takePhoto()
+        new CamService(w === NaN ? this.defaultImageWidth : w,
+            h === NaN ? this.defaultImageHeight : h,
+            timeout === NaN ? this.defaultTimeout : timeout)
+            .takePhoto()
             .then((photo) => {
                 res.status(200)
                     .contentType("image/png")

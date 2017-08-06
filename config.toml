@@ -1,0 +1,19 @@
+[http]
+port = 3000
+
+[mqtt]
+topics = ["topic","hello"]
+broker = "localhost:1883"
+user = "user"
+password = "password"
+ca = "/tmp/ca.crt"
+
+[camera]
+timeout = 0.1# seconds
+
+
+[timelapse]
+interval = 60000 # ms
+resolution = [1920, 1080]
+
+
