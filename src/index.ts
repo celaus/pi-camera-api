@@ -48,7 +48,7 @@ const camService = new CamService(imageWidth, imageHeight, timeout);
 const mqttService = new MQTTService(broker, user, password, useCert ? caPath : undefined);
 const scheduler = new SchedulerService(() => {
     camService.takePhoto().then((photo) => {
-        mqttService.publish(topic, photo);
+        console.log(mqttService.publish(topic, photo));
     })
 });
 
