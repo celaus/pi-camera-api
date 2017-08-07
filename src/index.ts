@@ -15,6 +15,7 @@ if (process.argv.length == 3) {
     const args = process.argv.slice(2);
     configFilePath = args[0];
 }
+console.info("Reading config ", configFilePath);
 let configRaw = readFileSync(configFilePath);
 
 const configService = new ConfigService();
@@ -22,15 +23,16 @@ let configuration: Configuration = undefined;
 try {
     configuration = configService.parse(configRaw.toString());
 } catch (error) {
-    console.log(`Could not read config: ${error}`);
+    console.error(`Could not read config: ${error}`);
     process.exit(1);
 }
 
 App.set('port', configuration.http.port);
-
+console.info("Starting CamService");
 const camService = new CamService(configuration.timelapse.width, configuration.timelapse.height, configuration.camera.timeout);
+console.info("Starting MQTT Service");
 const mqttService = new MQTTService(configuration.mqtt.broker, configuration.mqtt.user, configuration.mqtt.password, configuration.mqtt.caPath);
-
+console.info("Starting SchedulerService");
 const scheduler = new SchedulerService(() => {
     camService.takePhoto().then((photo) => {
         const message = {
@@ -45,7 +47,7 @@ const scheduler = new SchedulerService(() => {
         configuration.mqtt.topic.forEach(t => mqttService.publish(t, msg));
     })
 });
-
+console.info("Starting Timelapse");
 scheduler.start(configuration.timelapse.interval);
 
 const server = http.createServer(App);
