@@ -35,7 +35,7 @@ const scheduler = new SchedulerService(() => {
     camService.takePhoto().then((photo) => {
         const message = {
             meta: configuration.agent,
-            data: [{ name: "timelapse", unit: "image", value: photo }],
+            data: [{ "Binary": { name: "timelapse", unit: "image", value: photo } }],
             timestamp: Date.now()
         };
         const msg = JSON.stringify(message);
