@@ -10,7 +10,8 @@ export class ConfigService {
     private defaultInterval: number = 60000; // milliseconds
     private defaultPort: number = 3000;
     private defaultTopics = ["topic"];
-    private defaultBrokerAddress = 'localhost:1883'
+    private defaultBrokerAddress = 'localhost'
+    private defaultBrokerPort = 1883
     private defaultRole = 'role'
     private defaultName = 'agent'
 
@@ -43,6 +44,7 @@ export class ConfigService {
             mqtt: {
                 topic: config['mqtt']['topic'] || this.defaultTopics,
                 broker: config['mqtt']['broker'] || this.defaultBrokerAddress,
+                port: config['mqtt']['port'] || this.defaultBrokerPort,
                 user: config['mqtt']['user'] || undefined,
                 password: config['mqtt']['password'] || undefined,
                 caPath: 'ca' in config['mqtt'] ? config['mqtt']['ca'] : undefined,

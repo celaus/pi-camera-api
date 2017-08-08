@@ -3,10 +3,10 @@ port = 3000
 
 [mqtt]
 topics = ["topic","hello"]
-broker = "localhost:1883"
+broker = "localhost"
+port = 1883
 user = "user"
 password = "password"
-ca = "/tmp/ca.crt"
 
 [camera]
 timeout = 10# milliseconds

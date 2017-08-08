@@ -31,7 +31,7 @@ App.set('port', configuration.http.port);
 console.info("Starting CamService");
 const camService = new CamService(configuration.timelapse.width, configuration.timelapse.height, configuration.camera.timeout);
 console.info("Starting MQTT Service");
-const mqttService = new MQTTService(configuration.mqtt.broker, configuration.mqtt.user, configuration.mqtt.password, configuration.mqtt.caPath);
+const mqttService = new MQTTService(configuration.mqtt.broker, configuration.mqtt.port, configuration.mqtt.user, configuration.mqtt.password, configuration.mqtt.caPath);
 console.info("Starting SchedulerService");
 const scheduler = new SchedulerService(() => {
     camService.takePhoto().then((photo) => {

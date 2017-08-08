@@ -13,6 +13,7 @@ export interface HTTP {
 export interface MQTT {
     topic: Array<string>,
     broker: string,
+    port: number,
     user?: string,
     password?: string,
     caPath?: string
