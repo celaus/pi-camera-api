@@ -15,4 +15,10 @@ export class MQTTService {
     publish<T>(topic: string, message: string | Buffer) {
         this.client.publish(topic, message);
     }
+    /**
+     * shutdown
+     */
+    public shutdown() {
+        this.client.end();
+    }
 }
