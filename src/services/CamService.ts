@@ -8,7 +8,8 @@ export class CamService {
             width: w,
             height: h,
             time: timeout,
-            encoding: 'png'
+            encoding: 'png',
+            noFileSave: true
         });
     }
 
