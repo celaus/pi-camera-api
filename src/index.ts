@@ -41,11 +41,11 @@ const scheduler = new SchedulerService(() => {
             timestamp: Date.now()
         };
 
-        const msg = JSON.stringify(message);
+        const msg = JSON.stringify([message]);
         console.debug("Sending message:", msg);
         // blocking, this might be a bad idea if there's a lot of topics and/or slow internet connection
         configuration.mqtt.topic.forEach(t => mqttService.publish(t, msg));
-    })
+    });
 });
 console.info("Starting Timelapse");
 scheduler.start(configuration.timelapse.interval);

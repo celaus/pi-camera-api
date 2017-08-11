@@ -9,7 +9,7 @@ export class MQTTService {
     client: MqttClient;
 
     constructor(broker_address: string, port: number, username: string, password: string, ca: string) {
-        this.client = connect(broker_address, { port: port, username: username, password: password, ca: ca, protocol: "mqtt" });
+        this.client = connect(undefined, { host: broker_address, port: port, username: username, password: password, ca: ca, protocol: "mqtt" });
     }
 
     publish<T>(topic: string, message: string | Buffer) {

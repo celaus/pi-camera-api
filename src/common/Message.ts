@@ -1,8 +1,3 @@
-export interface Agent {
-    name: string,
-    role: string,
-}
-
 export interface Message<T> {
     meta: MetaData,
     data: Array<Measurement<T>>,
