@@ -35,13 +35,13 @@ const mqttService = new MQTTService(configuration.mqtt.broker, configuration.mqt
 console.info("Starting SchedulerService");
 const scheduler = new SchedulerService(() => {
     camService.takePhoto().then((photo) => {
-        const message = {
+        const message = [{
             meta: configuration.agent,
-            data: [{ "Binary": { name: "timelapse", unit: "image", value: photo } }],
+            data: [{ "Binary": { name: "timelapse", unit: "image", value: Array.from(photo.values()) } }],
             timestamp: Date.now()
-        };
-        const msg = JSON.stringify([message]);
-        console.log("Sending message:", msg);
+        }];
+        const msg = JSON.stringify(message);
+        console.log("Sending message...");
         // blocking, this might be a bad idea if there's a lot of topics and/or slow internet connection
         configuration.mqtt.topic.forEach(t => mqttService.publish(t, msg));
     });
