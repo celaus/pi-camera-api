@@ -37,17 +37,16 @@ const mqttService = new MQTTService(configuration.mqtt.broker, configuration.mqt
 log.info("Starting SchedulerService");
 const scheduler = new SchedulerService(() => {
     camService.takePhoto().then((photo) => {
-        return Array.from(photo.values())
-    }).then((photo) => {
-        const message = [{
+        const msg = JSON.stringify([{
             meta: configuration.agent,
-            data: [{ "Binary": { name: "timelapse", unit: "image", value: photo } }],
+            data: [{ "Binary": { name: "timelapse", unit: "image", value: Array.from(photo.values()) } }],
             timestamp: Date.now()
-        }];
-        const msg = JSON.stringify(message);
+        }]);
         log.info("Sending message...");
         // blocking, this might be a bad idea if there's a lot of topics and/or slow internet connection
         configuration.mqtt.topic.forEach(t => mqttService.publish(t, msg));
+    }).catch((reason) => {
+        console.warn("Could not capture: ", reason);
     });
 });
 log.info("Starting Timelapse");
@@ -58,6 +57,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 server.listen(configuration.http.port);
 mqttService.shutdown();
+
 function onError(error: NodeJS.ErrnoException): void {
     if (error.syscall !== 'listen') throw error;
     let bind = 'Port ' + configuration.http.port;
