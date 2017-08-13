@@ -5,7 +5,7 @@ import { SchedulerService } from './services/SchedulerService';
 import { MQTTService } from './services/MQTTService';
 import { CamService } from './services/CamService';
 import { ConfigService } from './services/ConfigService';
-import { Configuration } from './common/Config';
+import { Configuration, Device } from './common/Config';
 import { readFileSync } from 'fs';
 import App from './App';
 
@@ -37,11 +37,7 @@ const mqttService = new MQTTService(configuration.mqtt.broker, configuration.mqt
 log.info("Starting SchedulerService");
 const scheduler = new SchedulerService(() => {
     camService.takePhoto().then((photo) => {
-        const msg = JSON.stringify([{
-            meta: configuration.agent,
-            data: [{ "Binary": { name: "timelapse", unit: "image", value: Array.from(photo.values()) } }],
-            timestamp: Date.now()
-        }]);
+        const msg = makeMessage(configuration.agent, photo);
         log.info("Sending message...");
         // blocking, this might be a bad idea if there's a lot of topics and/or slow internet connection
         configuration.mqtt.topic.forEach(t => mqttService.publish(t, msg));
@@ -56,7 +52,14 @@ const server = http.createServer(App);
 server.on('error', onError);
 server.on('listening', onListening);
 server.listen(configuration.http.port);
-mqttService.shutdown();
+
+function makeMessage(agent: Device, p: Buffer): string {
+    return JSON.stringify([{
+        meta: configuration.agent,
+        data: [{ "Binary": { name: "timelapse", unit: "image", value: Array.from(p.values()) } }],
+        timestamp: Date.now()
+    }]);
+}
 
 function onError(error: NodeJS.ErrnoException): void {
     if (error.syscall !== 'listen') throw error;
