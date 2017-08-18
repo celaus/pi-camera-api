@@ -1,4 +1,4 @@
-![Docker Build Status](https://img.shields.io/docker/build/clma/pi-mqtt-timelapse.svg)]()
+![Docker Build Status](https://img.shields.io/docker/build/clma/pi-mqtt-timelapse.svg)
 
 
 # A Raspberry Pi Timelapse Camera
@@ -27,18 +27,18 @@ The JSON message pushed to the MQTT Broker looks like this:
 
 ```json
 [{
-    meta: { 
-        name: "<device name from config>", 
-        role: "<device role from config>" 
+    "meta": { 
+        "name": "<device name from config>", 
+        "role": "<device role from config>" 
     },
-    data:[{ 
-        Binary: { 
-            name: "timelapse", 
-            unit: "image", 
-            value: "base64 encoded image binary" 
+    "data": [{ 
+        "Binary": { 
+            "name": "timelapse", 
+            "unit": "image", 
+            "value": "base64 encoded image binary" 
         } 
     }],
-    timestamp: 12345678912 // time in milliseconds
+    "timestamp": 12345678912 // time in milliseconds
 }]
 ```
 
