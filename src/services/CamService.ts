@@ -1,4 +1,4 @@
-//    Copyright 2017 cm
+//    Copyright 2017 Claus Matzinger
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -28,9 +28,6 @@ export class CamService {
     }
 
     takePhoto(): Promise<Buffer> {
-        return new Promise((resolve, reject) => {
-            const result = new Array(10240000).map((n) => 8);
-            resolve(new Buffer(result));
-        });//this.cameraInstance.takePhoto();
+        return this.cameraInstance.takePhoto();
     }
 }
